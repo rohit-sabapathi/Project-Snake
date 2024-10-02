@@ -1,26 +1,37 @@
 import pygame
 
-# this line initializes all the modules in the pygame environment
 pygame.init()
-#this line implicitly initializes the display surface and set the display height and width
+
 screen = pygame.display.set_mode((600,450))
-#this line creates an object that helps to track time.
 clock = pygame.time.Clock()
 running = True
+dt = 0
+
+player_position = pygame.Vector2(screen.get_width() /2, screen.get_height()/2)    # returns the default position of the object in the screen
 
 while running:
-    #there is an event buffer or a queue to store the events which occurs
-    #at the window, by looping each object in the buffer , the
-    #type of the event is checked, if the user has clicked the
-    # cancel button[X] the code execution stops
-    for event in  pygame.event.get():
-        if event.type == pygame.QUIT:   #pygame.QUIT represents cancel[X]
+
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
             running = False
 
-    screen.fill("purple")  # fills the screen with the color mentioned
+    screen.fill("purple")
 
-    pygame.display.flip()  # updates the screen surface in the window with the new changes
+    pygame.draw.circle(screen,"red",player_position,30)  #draws a circle with parameters (surfaceObject,color,position of circle in screen,radius of circle)
 
-    clock.tick(60) # represents the frames that should be run per second like the while loop will now run 60 times per second.
+    keys = pygame.key.get_pressed()   #returns a tuple of boolean values .True if key is pressed False if released
+    #K_w,K_a etc.. each holds a number value or index for the tuple of key states in the 'keys' tuple
+    if keys[pygame.K_w]:
+        player_position.y -= 300 * dt
+    if keys[pygame.K_s]:
+        player_position.y += 300 * dt
+    if keys[pygame.K_a]:
+        player_position.x -= 300 * dt
+    if keys[pygame.K_d]:
+        player_position.x += 300 * dt
 
-pygame.quit() # safely quits the pygame environment.
+    pygame.display.flip()
+
+    dt = clock.tick(60) / 1000
+
+pygame.quit()
