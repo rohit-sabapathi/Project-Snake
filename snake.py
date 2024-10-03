@@ -6,8 +6,9 @@ screen = pygame.display.set_mode((600,450))
 clock = pygame.time.Clock()
 running = True
 dt = 0
+temp = 0
 
-player_position = pygame.Vector2(screen.get_width() /2, screen.get_height()/2)    # returns the default position of the object in the screen
+player_position = pygame.Vector2(screen.get_width() /2, screen.get_height()/2)
 
 while running:
 
@@ -15,20 +16,34 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
-    screen.fill("purple")
 
-    pygame.draw.circle(screen,"red",player_position,30)  #draws a circle with parameters (surfaceObject,color,position of circle in screen,radius of circle)
+    outer_rectangle = pygame.Rect(0,0,600,450)
 
-    keys = pygame.key.get_pressed()   #returns a tuple of boolean values .True if key is pressed False if released
-    #K_w,K_a etc.. each holds a number value or index for the tuple of key states in the 'keys' tuple
-    if keys[pygame.K_w]:
-        player_position.y -= 300 * dt
-    if keys[pygame.K_s]:
-        player_position.y += 300 * dt
-    if keys[pygame.K_a]:
-        player_position.x -= 300 * dt
-    if keys[pygame.K_d]:
-        player_position.x += 300 * dt
+    rectangle = pygame.Rect(25,25,550,400)
+
+    border_rectangle = pygame.draw.rect(screen,"black",outer_rectangle)
+
+    ground = pygame.draw.rect(screen,"grey",rectangle)
+
+    snake = pygame.draw.circle(screen,"brown1",player_position,16)
+
+    keys = pygame.key.get_pressed()
+    if keys[pygame.K_w] or temp == 1:
+            player_position.y -= 50 *dt
+            temp = 1
+    if keys[pygame.K_s] or temp == 2:
+            player_position.y += 50 *dt
+            temp = 2
+    if keys[pygame.K_a] or temp == 3:
+            player_position.x -= 50 *dt
+            temp = 3
+    if keys[pygame.K_d] or temp == 4:
+            player_position.x += 50 *dt
+            temp = 4
+    if temp == 0:
+          player_position.x += 50 *dt
+
+    # print(pygame.Rect.colliderect(snake,outer_rectangle))
 
     pygame.display.flip()
 
