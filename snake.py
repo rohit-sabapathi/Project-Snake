@@ -11,7 +11,6 @@ temp = 0
 game = 0
 touch = 0
 
-
 snake_body = []
 snake_length = 5
 segment_size = 20
@@ -30,7 +29,11 @@ def draw_snake(screen, snake_body):
         pygame.draw.rect(screen, "red", pygame.Rect(part[0], part[1], segment_size, segment_size))
 
 def update_snake_body(snake_body, snake_length, head_position):
-    snake_body.insert(0, list(head_position))
+    lst = list(head_position)
+
+    if len(snake_body) == 0 or not(pygame.Rect(snake_body[0][0],snake_body[0][1],segment_size,segment_size).colliderect(pygame.Rect(lst[0],lst[1],segment_size,segment_size))):
+
+        snake_body.insert(0, list(head_position))
 
     if len(snake_body) > snake_length:
         snake_body.pop()
@@ -65,8 +68,9 @@ while running:
         if not touch:
             one = randrange(26, 550)
             two = randrange(26, 400)
-            if pygame.Rect(player_position.x, player_position.y, segment_size, segment_size).collidepoint((one, two)):
-                pass
+            for piece in snake_body:
+                if pygame.Rect(piece[0],piece[1], segment_size, segment_size).collidepoint((one, two)):
+                    pass
             else:
                 box = pygame.Rect(one, two, 16, 16)
                 touch = 1
@@ -77,6 +81,16 @@ while running:
             boxes = pygame.draw.rect(screen, "grey", box)
             touch = 0
             snake_length += 5
+
+        snakes = []
+        for segment in snake_body[3:]:
+            snakes.append(pygame.Rect(segment[0], segment[1], segment_size, segment_size))
+        head = pygame.Rect(snake_body[0][0], snake_body[0][1], segment_size, segment_size)
+        for s in snakes[1:]:
+            if head.colliderect(s):
+                game = 2
+                break
+
 
         keys = pygame.key.get_pressed()
         if keys[pygame.K_w] and direction.y == 0:
@@ -95,10 +109,7 @@ while running:
         if temp_rect.colliderect(border_bottom) or temp_rect.colliderect(border_top) or temp_rect.colliderect(border_right) or temp_rect.colliderect(border_left):
             game = 2
 
-        for segment in snake_body[:-1]:
-            if segment == (player_position.x, player_position.y):
-                game = 2
-                break
+
 
     elif game == 2:
         screen.fill("lavender")
