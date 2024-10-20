@@ -63,13 +63,17 @@ while running:
         draw_snake(screen, snake_body)
 
         if not touch:
+            squares = []
             one = randrange(26, 550)
             two = randrange(26, 400)
             for piece in snake_body:
-                if pygame.Rect(piece[0],piece[1], segment_size, segment_size).colliderect(pygame.Rect(one, two,16,16)):
-                    pass
+                if pygame.Rect(piece[0],piece[1], segment_size, segment_size).colliderect(pygame.Rect(one, two,18,18)):
+                    box = pygame.Rect(27,27,18,18)
+                    touch = 1
+                    print("si")
+                    break
             else:
-                box = pygame.Rect(one, two, 16, 16)
+                box = pygame.Rect(one, two, 18, 18)
                 touch = 1
 
         boxes = pygame.draw.rect(screen, "yellow", box)
