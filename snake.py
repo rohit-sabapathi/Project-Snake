@@ -11,16 +11,16 @@ temp = 0
 game = 0
 touch = 0
 
+
 snake_body = []
 snake_length = 5
 segment_size = 20
-move_speed = 100
+move_speed = 75
 
 fonts = pygame.font.SysFont("tomorrowregular", 42, False, False)
 text = fonts.render("Start", False, "black")
-text2 = fonts.render("Again",False,"black")
 fonts1 = pygame.font.SysFont("tomorrowregular", 50)
-text1 = fonts1.render("Mission Successfully Failed!", False, "black")
+text1 = fonts.render("Mission Successfully Failed!", False, "black")
 
 player_position = pygame.Vector2(screen.get_width() / 2, screen.get_height() / 2)
 direction = pygame.Vector2(1, 0)
@@ -30,11 +30,7 @@ def draw_snake(screen, snake_body):
         pygame.draw.rect(screen, "red", pygame.Rect(part[0], part[1], segment_size, segment_size))
 
 def update_snake_body(snake_body, snake_length, head_position):
-    lst = list(head_position)
-
-    if len(snake_body) == 0 or not(pygame.Rect(snake_body[0][0],snake_body[0][1],segment_size,segment_size).colliderect(pygame.Rect(lst[0],lst[1],segment_size,segment_size))):
-
-        snake_body.insert(0, list(head_position))
+    snake_body.insert(0, list(head_position))
 
     if len(snake_body) > snake_length:
         snake_body.pop()
@@ -42,11 +38,11 @@ def update_snake_body(snake_body, snake_length, head_position):
 while running:
 
     for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                if button1.collidepoint(pygame.mouse.get_pos()):
-                    game = 1
+        if event.type == pygame.QUIT:
+            running = False
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if button1.collidepoint(pygame.mouse.get_pos()):
+                game = True
 
     if game == 1:
         left_border = pygame.Rect(0, 0, 25, 450)
@@ -70,7 +66,7 @@ while running:
             one = randrange(26, 550)
             two = randrange(26, 400)
             for piece in snake_body:
-                if pygame.Rect(piece[0],piece[1], segment_size, segment_size).collidepoint((one, two)):
+                if pygame.Rect(piece[0],piece[1], segment_size, segment_size).colliderect(pygame.Rect(one, two,16,16)):
                     pass
             else:
                 box = pygame.Rect(one, two, 16, 16)
@@ -81,17 +77,7 @@ while running:
         if pygame.Rect(player_position.x, player_position.y, segment_size, segment_size).colliderect(boxes):
             boxes = pygame.draw.rect(screen, "grey", box)
             touch = 0
-            snake_length += 5
-
-        snakes = []
-        for segment in snake_body[3:]:
-            snakes.append(pygame.Rect(segment[0], segment[1], segment_size, segment_size))
-        head = pygame.Rect(snake_body[0][0], snake_body[0][1], segment_size, segment_size)
-        for s in snakes[1:]:
-            if head.colliderect(s):
-                game = 2
-                break
-
+            snake_length += 8
 
         keys = pygame.key.get_pressed()
         if keys[pygame.K_w] and direction.y == 0:
@@ -110,24 +96,22 @@ while running:
         if temp_rect.colliderect(border_bottom) or temp_rect.colliderect(border_top) or temp_rect.colliderect(border_right) or temp_rect.colliderect(border_left):
             game = 2
 
-
+        if snake_length > 35:
+            head = pygame.Rect(player_position.x,player_position.y,segment_size,segment_size)
+            for segment in snake_body[34:]:
+                if head.colliderect(pygame.Rect(segment[0],segment[1],segment_size,segment_size)):
+                    game = 2
+                    break
 
     elif game == 2:
         screen.fill("lavender")
         screen.blit(text1, (300 - text1.get_width() // 2, 225 - text1.get_height() // 2))
-        btn = pygame.Rect(250,250,100,50)
-        btn1 = pygame.draw.rect(screen,"lightslateblue",btn)
-        screen.blit(text2,btn1)
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            if btn1.collidepoint(pygame.mouse.get_pos()):
-                game = 0
     else:
         screen.fill("lavender")
-        button = pygame.Rect(300 - 50, 225 - 25, 100, 50)
+        button = pygame.Rect(player_position.x - 50, player_position.y - 25, 100, 50)
         button1 = pygame.draw.rect(screen, "lightslateblue", button)
         screen.blit(text, button1)
 
-    
     pygame.display.flip()
 
     dt = clock.tick(60) / 1000
