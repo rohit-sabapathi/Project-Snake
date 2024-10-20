@@ -18,8 +18,9 @@ move_speed = 100
 
 fonts = pygame.font.SysFont("tomorrowregular", 42, False, False)
 text = fonts.render("Start", False, "black")
+text2 = fonts.render("Again",False,"black")
 fonts1 = pygame.font.SysFont("tomorrowregular", 50)
-text1 = fonts.render("Mission Successfully Failed!", False, "black")
+text1 = fonts1.render("Mission Successfully Failed!", False, "black")
 
 player_position = pygame.Vector2(screen.get_width() / 2, screen.get_height() / 2)
 direction = pygame.Vector2(1, 0)
@@ -41,11 +42,11 @@ def update_snake_body(snake_body, snake_length, head_position):
 while running:
 
     for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            if button1.collidepoint(pygame.mouse.get_pos()):
-                game = True
+            if event.type == pygame.QUIT:
+                running = False
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if button1.collidepoint(pygame.mouse.get_pos()):
+                    game = 1
 
     if game == 1:
         left_border = pygame.Rect(0, 0, 25, 450)
@@ -114,12 +115,19 @@ while running:
     elif game == 2:
         screen.fill("lavender")
         screen.blit(text1, (300 - text1.get_width() // 2, 225 - text1.get_height() // 2))
+        btn = pygame.Rect(250,250,100,50)
+        btn1 = pygame.draw.rect(screen,"lightslateblue",btn)
+        screen.blit(text2,btn1)
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if btn1.collidepoint(pygame.mouse.get_pos()):
+                game = 0
     else:
         screen.fill("lavender")
-        button = pygame.Rect(player_position.x - 50, player_position.y - 25, 100, 50)
+        button = pygame.Rect(300 - 50, 225 - 25, 100, 50)
         button1 = pygame.draw.rect(screen, "lightslateblue", button)
         screen.blit(text, button1)
 
+    
     pygame.display.flip()
 
     dt = clock.tick(60) / 1000
