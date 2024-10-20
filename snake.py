@@ -70,7 +70,6 @@ while running:
                 if pygame.Rect(piece[0],piece[1], segment_size, segment_size).colliderect(pygame.Rect(one, two,18,18)):
                     box = pygame.Rect(27,27,18,18)
                     touch = 1
-                    print("si")
                     break
             else:
                 box = pygame.Rect(one, two, 18, 18)
